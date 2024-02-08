@@ -1,0 +1,45 @@
+1: Angular Signal
+    Signals allows you to retrieve the value (pull) and update or mutate it (push). signal always has a value, and retrieving this value is done synchronously.
+Angular uses Zone.js for change detection mechanism
+At the start of an Angular application, the framework overrides certain low-level browser APIs, such as addEventListener, using the Zone.js library. Zone.js is responsible for triggering change detection by listening to various events like clicks, mouseovers, HTTP requests, and timers (setTimeout, setInterval).
+Whenever something changes in our application, a change detection process is performed, and page is refreshed. Angular organizes our application as a component tree, where each component is associated with a change detector. By default, when a change occurs in any child component, the entire tree is re-evaluated, regardless of each component’s dependencies. This process is called dirty checking.
+Even if your application’s change detection is set to OnPush mode, the change detection cycle still traverses the entire component tree. However, with OnPush components that have no change dependencies, they won’t be re-evaluated unnecessarily.
+To enhance the performance of Angular’s change detection mechanism Signal pattern will be helpful
+Using signals change detection will occur at the component level only when the associated signal changes, without the need to traverse the entire component tree or rely on Zone.js.
+Using Signal pattern, Angular aims to improve the efficiency of change detection, leading to better performance.
+
+2: Server-Side Rendering
+    Angular used destructive hydration for SSR
+In destructive hydration for SSR when application loads a static DOM will load at initially and it will not interactive when SSR rendering is done pre-Dom will distoyed and replace with new dom.
+resulting in issues like screen flickering and negatively impacting user experience
+Angular 16 introduces non-destructive hydration to overcome these problems. With non-destructive hydration, the DOM is not destroyed when the client app is downloaded and bootstrapped. Instead, it enhances the existing DOM 
+Angular 16 this is currently in the developer preview stage. To enable it, you can include provideClientHydration() as a provider when bootstrapping the application.
+  bootstrapApplication(RootCmp, {
+   providers: [provideClientHydration()]
+  });
+
+3: Route params mapping
+before Angular 16, developers had to use the ActivatedRoute service to retrieve URL parameters, query parameters, and associated data.
+With Angular 16 it will no longer be necessary to inject the ActivatedRoute service to retrieve the various route parameters because these can be directly binded to component inputs
+provideRouter(routes, withComponentInputBinding());  in appConfig
+@Component({...})
+export class SearchComponent {
+  @Input() id!: string;   -->id name same as params in Url
+  @Input() searchDetails!: SearchDetails
+}
+
+4: Required Input
+From version 16, making an input required will be a simple configuration object to be passed to the metadata of the input annotation.
+ @Input({ required: true }) name: string = '';
+it will makes that input property get data else will get compile time error 
+In some case Previous version we are binding input value to a perticular propety if no value passed to it it will throws error at runtime when checking with life cycle hooks ngOnchanges. Using { required: true } in Angular 16 will get compile time error if no data passed
+
+5: DestroyRef injector
+Simplify lifecycle cleanup operations with a new DestroyRef provider
+Inject DestroyRef into components, directives, and pipes to register cleanup callbacks.
+
+6: Standalone Project Support
+Angular 14 started supporting standalone components, which are independent of modules.
+Angular 16 takes this to the next level by supporting standalone project creation.
+Angular 16 has a flag to create a standalone project through the Angular CLI. You have to execute ng new command with the –standalone flag. Then, it will generate a project without NgModules.
+ng new prjName --standalone
