@@ -1,1 +1,80 @@
+1. Built-in Control Flow: @for, @if, and @switch directives
+More declarative and JavaScript-like control flow in templates.
+It is automatically available in our templates without additional imports
 
+1. @if for Conditional Rendering:
+Replaces *ngIf.
+Syntax: @if (condition) { ...content... }
+Example :
+<ul>
+  @if (isLoggedIn) {
+    <li>Welcome, {{ username }}</li>
+  } @else {
+    <li><a href="/login">Sign In</a></li>
+  }
+</ul>
+We can provide @else if also its not possible previously
+
+2. @for for Looping and Iteration:
+Replaces *ngFor.
+Syntax: @for (let item of items) { ...content... }
+Accesses iterated item properties using item.property.
+Example :
+<ul>
+  @for (let product of products) {
+    <li>{{ product.name }} - ${{ product.price }}</li>
+  }
+</ul>
+@for loop also has a shortcut for collections with zero items via an optional @empty block.
+
+3. @switch for Multi-Way Selection:
+Replaces ngSwitch.
+Syntax: @switch (expression) { ...cases... }
+Each case uses @case (value) syntax to match against expression value.
+Example :
+<div @switch (rating) {
+  @case (1) { <p>Very poor</p> }
+  @case (2) { <p>Poor</p> }
+  @case (3) { <p>Okay</p> }
+  @case (4) { <p>Good</p> }
+  @case (5) { <p>Excellent</p> }
+  @default { <p>No rating</p> }
+</div>
+
+2. Deferrable views
+Angular 17 provides a simple and powerful mechanism for defining ways to tell the browser what to display along with instructions to make your apps faster.
+future of lazy loading
+Example of the simplest @defer:
+@defer {
+  <div>My deferred content</div>
+}
+This tells the browser to render the rest of the page first, and then the deferred content.
+
+Example : Placeholder and loading both provide a static layout for the coming content,
+@defer {
+ <child-app>My deferred content</child-app>
+} @placeholder {
+ <span>Placeholder content</span>
+} @loading {
+ <span>Loading deferred content...</span>
+}
+
+Several different strategies are supported by @defer out of the box, like viewport (when the user scrolls it into view), idle (browser is idle), interaction (user interacts with the element), and hover (pointer hovers on element). 
+Deferrable views offer a few more triggers:
+on immediate — start lazily loading automatically, without blocking the browser
+on timer(<time>) — delay loading with a timer
+on viewport and on viewport(<ref>) — viewport also allows to specify a reference for an anchor element. When the anchor element is visible, Angular will lazily load the component and render it
+on interaction and on interaction(<ref>) — enables you to initiate lazy loading when the user interacts with a particular element
+on hover and on hover(<ref>) — triggers lazy loading when the user hovers an element
+when <expr> — enables you to specify your own condition via a boolean expression
+
+3. SSR and SSG
+To enable SSR  ng new my-app --ssr
+To add hybrid rendering support to your existing application run   ng add @angular/ssr
+When application runs on serverside rendering server render satic html page with small js in browser at starting of application and in background it render the js files then later it get bootstraped into it based on user interaction it will rendered the dom
+
+4. Experimental afterNextRender and afterRender Hooks:
+To improve the performance of Angular’s SSR and SSG
+afterRender — register a callback to be invoked each time the application finishes rendering
+afterNextRender — register a callback to be invoked the next time the application finishes rendering
+Only the browser will invoke these hooks,
